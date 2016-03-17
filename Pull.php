@@ -1,4 +1,6 @@
 <?
+echo getcwd();
+exit;
 session_start();
 ini_set('display_errors', 1);
 error_reporting(E_ALL ^ E_NOTICE);
@@ -10,33 +12,27 @@ if(isset($_SESSION['stamp'])){
 		
 		switch($_GET['cmd']){
 			case 'create':
-			http://front-desk.ca/directories/dist/Pull.php?cmd=create&folder=test
+			//http://front-desk.ca/directories/dist/Pull.php?cmd=create&folder=test3&url=https://github.com/uplight/dirs.git
 			
+			$folder= getcwd().'/'.$_GET['folder'];
 			$folder= $_GET['folder'];
+			
 			if(file_exists($folder)){
 				$_SESSION['folder'] = $folder;
 				 echo 'exists ';
-			}else if(@mkdir($folder, 0755)){
+			}else {				
+				$url = $_GET['url'];
+				set_time_limit (300);
+				$cmd = "git clone $url $folder";
+					$res=shell_exec($cmd);
 				$_SESSION['folder'] = $folder;
-				echo 'success';
-			}else echo 'error creating folder '.$folder;			
-			
+				echo 'created: '.$res;				
+			}		
 						
-			break;
-			case 'clone':
-			//http://front-desk.ca/directories/dist/Pull.php?cmd=clone&url=https://github.com/vladvaldtitov/dir_test.git
-			
-			$url = $_GET['url'];
-			set_time_limit (300);
-			$dest= $_SESSION['folder'];
-			$src = $url;
-			$cmd = "git clone -l  $src $dest 2>&1";	
-			echo 'process:  '.shell_exec($cmd);
-			break;	
-			
+			break;			
 			case 'pull';
-			echo 'process:  '.shell_exec("git pull 2>&1");
-			exit();
+			//echo 'process:  '.shell_exec("git pull 2>&1");
+			//exit();
 
 			if(!isset( $_GET['folder']) || !file_exists($_GET['folder'])){
 				
@@ -47,15 +43,22 @@ if(isset($_SESSION['stamp'])){
 				echo json_encode($out);
 				exit();
 			}
+			
 			//http://front-desk.ca/directories/dist/Pull.php?cmd=pull&folder=test		
 			$dir=  $_GET['folder'];
-			//$cmd = "cd $dir && git pull 2>&1";
-			 echo 'process:  '.shell_exec($cmd);
-			break;	
+			$cmd = "cd $dir && git pull 2>&1";
+			$res = shell_exec($cmd);
+			 echo 'process:  '.$res;
+			break;			
+				
 			case 'fetch':
-			$dir=  $_GET['folder'];
-			//$cmd = "cd $dir && git fetch 2>&1";
-			 echo 'process:  '.exec($cmd);
+			$dir=  $_GET['folder'];			
+			//$cmd = "cd $dir && git pull 2>&1; echo $?";
+			$cmd = "cd $dir && git pull";
+			
+			 $res = shell_exec($cmd);
+			 
+			  echo 'process:  '.$res;
 			break;
 			default: echo '?????????????';
 			
