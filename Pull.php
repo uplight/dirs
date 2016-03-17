@@ -33,12 +33,31 @@ if(isset($_SESSION['stamp'])){
 			$cmd = "git clone -l  $src $dest 2>&1";	
 			echo 'process:  '.shell_exec($cmd);
 			break;	
-			case 'pull';	
+			
+			case 'pull';
+			echo 'process:  '.shell_exec("git pull 2>&1");
+			exit();
+
+			if(!isset( $_GET['folder']) || !file_exists($_GET['folder'])){
+				
+				$out =new stdClass();
+				$out->folders = scandir('./');
+				$out->msg='specify: folder=?';
+				header('Content-Type: application/json');
+				echo json_encode($out);
+				exit();
+			}
 			//http://front-desk.ca/directories/dist/Pull.php?cmd=pull&folder=test		
-			$dir= isset( $_GET['folder'])? $_GET['folder']:$_SESSION['folder'];
-			$cmd = "cd $dir && git pull 2>&1";
+			$dir=  $_GET['folder'];
+			//$cmd = "cd $dir && git pull 2>&1";
 			 echo 'process:  '.shell_exec($cmd);
 			break;	
+			case 'fetch':
+			$dir=  $_GET['folder'];
+			//$cmd = "cd $dir && git fetch 2>&1";
+			 echo 'process:  '.exec($cmd);
+			break;
+			default: echo '?????????????';
 			
 		}
 		
@@ -48,6 +67,8 @@ if(isset($_SESSION['stamp'])){
 	$_SESSION['stamp'] = time();
 	echo 'one more time';
 }
+
+
 
 
 ?>
