@@ -1,5 +1,5 @@
 <?
-echo 'heh '.getcwd();
+echo ''.getcwd();
 
 exit;
 session_start();
