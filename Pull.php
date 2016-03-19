@@ -1,5 +1,6 @@
 <?
-echo getcwd();
+echo 'heh '.getcwd();
+
 exit;
 session_start();
 ini_set('display_errors', 1);
